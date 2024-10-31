@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Navigation</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btn_add_note">Add</string>
+    <string name="start_label">What do need to use?</string>
+    <string name="start_btn_room">ROOM</string>
+    <string name="start_btn_firebase">Firebase</string>
+    <string name="title">Note</string>
+    <string name="toast_enter_name">Enter title</string>
+    <string name="email_hint">email</string>
+    <string name="password_hint">password</string>
+    <string name="start_btn_login">Login</string>
+    <string name="toast_wrong_enter">Enter email and password</string>
+</resources>
