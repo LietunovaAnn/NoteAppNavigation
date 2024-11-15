@@ -10,6 +10,14 @@ import kotlinx.coroutines.launch
 
 
 class NoteFragmentViewModel(application: Application): AndroidViewModel(application) {
+
+    fun update(note: AppNote, onSuccess:() -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            REPOSITORY.update(note) {
+                onSuccess()
+            }
+        }
+    }
     fun delete(note: AppNote, onSuccess:() -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             REPOSITORY.delete(note) {

@@ -39,6 +39,16 @@ class AppFirebaseRepository : DatabaseRepository {
 
     }
 
+    override suspend fun update(note: AppNote, onSuccess: () -> Unit) {
+        val mapNote = hashMapOf<String, Any>()
+        mapNote[NAME] = note.name
+        mapNote[TEXT] = note.text
+
+        REF_DATABASE.child(note.idFirebase)
+            .updateChildren(mapNote)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { showToast(it.message.toString()) }    }
+
     override suspend fun delete(note: AppNote, onSuccess: () -> Unit) {
         REF_DATABASE.child(note.idFirebase).removeValue()
             .addOnSuccessListener { onSuccess() }

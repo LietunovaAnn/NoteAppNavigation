@@ -1,6 +1,8 @@
 package com.bignerdranch.android.navigation.screen.note
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -8,12 +10,14 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bignerdranch.android.navigation.R
 import com.bignerdranch.android.navigation.databinding.FragmentNoteBinding
 import com.bignerdranch.android.navigation.models.AppNote
 import com.bignerdranch.android.navigation.utilits.APP_ACTIVITY
+import com.bignerdranch.android.navigation.utilits.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -39,10 +43,49 @@ class NoteFragment : Fragment() {
         initialization()
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mBinding.noteText.addTextChangedListener (
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    mCurrentNote.text = s.toString()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+
+        mBinding.noteName.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    mCurrentNote.name = s.toString()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+    }
+
     private fun initialization() {
         setHasOptionsMenu(true)
-        mBinding.noteText.text = mCurrentNote.text
-        mBinding.noteName.text = mCurrentNote.name
+        mBinding.noteText.setText(mCurrentNote.text)
+        mBinding.noteName.setText(mCurrentNote.name)
         mViewModel = ViewModelProvider(this).get(NoteFragmentViewModel::class.java)
 
     }
@@ -62,6 +105,15 @@ class NoteFragment : Fragment() {
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mViewModel.update(mCurrentNote) {
+            lifecycleScope.launch(Dispatchers.Main) {
+                showToast("update")
+            }
+        }
     }
 
     override fun onDestroy() {
